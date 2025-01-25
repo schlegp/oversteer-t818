@@ -36,7 +36,7 @@ class DeviceManager:
             wid.TM_F458: 240,
             wid.TM_FFRW: 180,
             wid.TM_T150: 1080,
-            wid.TM_T248: 900,
+            wid.TM_ADV_RACER: 1080,
             wid.TM_T300RS: 1080,
             wid.TM_T300RS_FF1: 1080,
             wid.TM_T300RS_GT: 1080,
@@ -113,7 +113,8 @@ class DeviceManager:
 
         logging.debug("%s: ID_VENDOR_ID: %s ID_MODEL_ID: %s", device_node,
                       udevice.get('ID_VENDOR_ID'), udevice.get('ID_MODEL_ID'))
-
+        for key, value in udevice.properties.items():
+            print(f"{key}: {value}")
         device.set({
             'id': id,
             'vendor_id': udevice.get('ID_VENDOR_ID'),
@@ -125,6 +126,7 @@ class DeviceManager:
                           'utf-8').decode('unicode_escape'),
             'max_range': self.supported_wheels[usb_id],
             })
+        logging.debug("Max Range: %s",  self.supported_wheels.items())
 
     def first_device(self):
         if self.devices:

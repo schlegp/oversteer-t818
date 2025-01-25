@@ -190,6 +190,7 @@ class Gui:
 
         self.ui.set_max_range(self.device.get_max_range())
         self.ui.set_modes(self.model.get_mode_list())
+        self.ui.set_ffb_modes(self.model.get_ffb_mode_list())
 
         if self.model.get_profile():
             self.ui.set_profile(self.model.get_profile())

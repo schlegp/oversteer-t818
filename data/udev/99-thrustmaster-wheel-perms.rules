@@ -31,7 +31,7 @@ ATTRS{idProduct}=="b66f", RUN+="/bin/sh -c 'cd %S%p; chmod 666 range gain spring
 ATTRS{idProduct}=="b66d", RUN+="/bin/sh -c 'cd %S%p; chmod 666 range gain spring_level damper_level friction_level alternate_modes'"
 
 # Thrustmaster T248 Racing Wheel (USB)
-ATTRS{idProduct}=="b696", RUN+="/bin/sh -c 'cd %S%p; chmod 666 range gain spring_level damper_level friction_level'"
+ATTRS{idProduct}=="b696", RUN+="/bin/sh -c 'cd %S%p; chmod 666 range gain spring_level damper_level friction_level color mode'"
 
 # Thrustmaster TS-XW Racing Wheel (USB)
 ATTRS{idProduct}=="b692", RUN+="/bin/sh -c 'cd %S%p; chmod 666 range gain spring_level damper_level friction_level'"

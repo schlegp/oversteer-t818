@@ -21,6 +21,7 @@ class Model:
         'use_buttons': None,
         'center_wheel': None,
         'start_app_manually': None,
+        'ffb_mode': None
     }
 
     types = {
@@ -38,6 +39,7 @@ class Model:
         'use_buttons': 'boolean',
         'center_wheel': 'boolean',
         'start_app_manually': 'boolean',
+        'ffb_mode': 'string'
     }
 
     def __init__(self, device = None, ui = None):
@@ -85,6 +87,7 @@ class Model:
             'use_buttons': False if self.device.get_range() is not None else None,
             'center_wheel': False,
             'start_app_manually': False,
+            'ffb_mode': self.device.get_ffb_mode(),
         }
 
     def update_from_device_settings(self):
@@ -216,6 +219,16 @@ class Model:
 
     def get_damper_level(self):
         return self.data['damper_level']
+
+    def set_ffb_mode(self, value):
+        if self.set_if_changed('ffb_mode', value):
+            self.device.set_ffb_mode(value)
+
+    def get_ffb_mode(self):
+        return self.data['ffb_mode']
+    
+    def get_ffb_mode_list(self):
+        return self.device.list_ffb_modes()
 
     def set_friction_level(self, value):
         value = int(value)

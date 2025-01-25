@@ -49,6 +49,11 @@ class GtkUi:
         self.emulation_mode_combobox.add_attribute(cell_renderer, 'text', 1)
         self.emulation_mode_combobox.set_id_column(0)
 
+        cell_renderer = Gtk.CellRendererText()
+        self.ffb_mode_combobox.pack_start(cell_renderer, True)
+        self.ffb_mode_combobox.add_attribute(cell_renderer, 'text', 1)
+        self.ffb_mode_combobox.set_id_column(0)
+
         self.set_range_overlay('never')
         self.disable_save_profile()
 
@@ -263,6 +268,24 @@ class GtkUi:
             self.emulation_mode_combobox.set_sensitive(True)
             self.change_emulation_mode_button.set_sensitive(True)
             self.emulation_mode_combobox.set_active_id(mode)
+
+    def set_ffb_modes(self, ffb_modes):
+        self.change_ffb_mode_button.set_sensitive(False)
+        model = self.ffb_mode_combobox.get_model()
+        if model is None:
+            model = Gtk.ListStore(str, str)
+        else:
+            self.ffb_mode_combobox.set_model(None)
+            model.clear()
+        if not ffb_modes:
+            self.ffb_mode_combobox.set_sensitive(False)
+        else:
+            for key, values in enumerate(ffb_modes):
+                model.append(values[:2])
+                if values[2]:
+                    self.ffb_mode_combobox.set_active(key)
+            self.ffb_mode_combobox.set_sensitive(True)
+        self.ffb_mode_combobox.set_model(model)
 
     def set_range(self, wrange):
         if wrange is None:
@@ -584,6 +607,8 @@ class GtkUi:
         self.new_profile_name = self.builder.get_object('new_profile_name')
         self.emulation_mode_combobox = self.builder.get_object('emulation_mode')
         self.change_emulation_mode_button = self.builder.get_object('change_emulation_mode')
+        self.ffb_mode_combobox = self.builder.get_object('ffb_mode')
+        self.change_ffb_mode_button = self.builder.get_object('change_ffb_mode')
         self.wheel_range = self.builder.get_object('wheel_range')
         self.wheel_range_setup = self.builder.get_object('wheel_range_setup')
         self.combine_none = self.builder.get_object('combine_none')

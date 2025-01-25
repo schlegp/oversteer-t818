@@ -26,6 +26,7 @@ class Device:
         self.vendor_id = None
         self.product_id = None
         self.usb_id = None
+        self.version = None
         self.dev_path = None
         self.dev_name = None
         self.name = None
@@ -35,6 +36,7 @@ class Device:
         self.set(data)
 
     def set(self, data):
+        
         for key, value in data.items():
             setattr(self, key, value)
 
@@ -105,6 +107,28 @@ class Device:
             alternate_modes.append([mode_id, name, selected])
         return alternate_modes
 
+    def list_ffb_modes(self):
+        path = self.checked_device_file("mode")
+        print(path)
+        if not path:
+            return None
+        with open(path, "r") as file:
+            data = file.read()
+        lines = data.splitlines()
+        reg = re.compile("(\\d+): (.*)")
+        ffb_modes = []
+        for line in lines:
+            matches = reg.match(line)
+            mode_id = matches.group(1)
+            name = matches.group(2)
+            if name.endswith("*"):
+                name = name[:-2]
+                selected = True
+            else:
+                selected = False
+            ffb_modes.append([mode_id, name, selected])
+        return ffb_modes
+
     def get_mode(self):
         path = self.checked_device_file("alternate_modes")
         if not path:
@@ -141,7 +165,39 @@ class Device:
             if self.is_ready():
                 return True
             time.sleep(1)
+        # Wait a bit more
         return False
+    
+    def get_ffb_mode(self):
+        path = self.checked_device_file("mode")
+        if not path:
+            return None
+        with open(path, "r") as file:
+            data = file.read()
+
+        mode_id = None
+        lines = data.splitlines()
+        reg = re.compile("(\\d+): (.*)")
+        for line in lines:
+            matches = reg.match(line)
+            mode_id = matches.group(1)
+            name = matches.group(2)
+            if name.endswith("*"):
+                return mode_id
+        return mode_id
+
+    def set_ffb_mode(self, mode):
+        path = self.checked_device_file("mode")
+        if not path:
+            return False
+        old_mode = self.get_ffb_mode()
+        if old_mode == mode:
+            return True
+        logging.debug("Setting mode: %s", str(mode))
+        with open(path, "w") as file:
+            file.write(mode)
+        # Wait a bit more
+        return True
 
     def get_range(self):
         path = self.checked_device_file("range")
@@ -426,7 +482,7 @@ class Device:
                 event.code = ecodes.ABS_RZ
             elif event.code == ecodes.ABS_RZ:
                 event.code = ecodes.ABS_Y
-        elif self.usb_id in [wid.TM_T248, wid.TM_T150, wid.TM_TMX]:
+        elif self.usb_id in [wid.TM_ADV_RACER, wid.TM_T150, wid.TM_TMX]:
             if event.code == ecodes.ABS_RZ:
                 event.code = ecodes.ABS_Z
             elif event.code == ecodes.ABS_Y:

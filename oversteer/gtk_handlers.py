@@ -61,6 +61,15 @@ class GtkHandlers:
     def on_emulation_mode_changed(self, widget):
         self.ui.change_emulation_mode_button.set_sensitive(True)
 
+    def on_change_ffb_mode_clicked(self, widget):
+        mode = self.ui.ffb_mode_combobox.get_active_id()
+        self.model.set_ffb_mode(mode)
+        self.model.flush_ui()
+        self.ui.change_ffb_mode_button.set_sensitive(False)
+
+    def on_ffb_mode_changed(self, widget):
+        self.ui.change_ffb_mode_button.set_sensitive(True)
+
     def on_wheel_range_value_changed(self, widget):
         wrange = int(widget.get_value() * 10)
         self.model.set_range(wrange)
